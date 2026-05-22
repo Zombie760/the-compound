@@ -1,0 +1,666 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0d0d0d">
+<title>The Compound — Zorro Ranch, Little Saint James, and the Architecture of Impunity</title>
+<meta name="description" content="Interactive evidence board for THE COMPOUND by Kyle Jimenez. 40+ named persons, 20+ institutions, 50+ filed documents. Every pin is a primary source.">
+<meta property="og:title" content="THE COMPOUND — The Evidence Board">
+<meta property="og:description" content="Interactive companion to the book by Kyle Jimenez. Drag the board. Pull a thread. Every pin is a primary source.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://zombie760.github.io/the-compound/corkboard/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="THE COMPOUND — The Evidence Board">
+<meta name="twitter:description" content="Interactive companion to the book by Kyle Jimenez. Drag the board. Pull a thread.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700;1,900&family=Lora:ital,wght@0,400;0,600;1,400&family=Kalam:wght@300;400;700&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Architects+Daughter&family=Inter:wght@400;600&family=Oswald:wght@400;500;700&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+:root {
+  --wall-bg: #0d0d0d;
+  --wall-concrete: #1a1a1a;
+  --wall-brick: #2d2520;
+  --paper-basement: #e8e0d0;
+  --paper-aged: #c4b8a8;
+  --paper-yellow: #d4c4a0;
+  --ink-black: #050505;
+  --ink-blood: #8b0000;
+  --spray-red: #ff2a2a;
+  --spray-silver: #c0c0c0;
+  --neon-green: #39ff14;
+  --chain-orange: #ff6b00;
+  --marker-black: #1a1a1a;
+  --concrete-gray: #4a4a4a;
+  --rust: #8b4513;
+  --graffiti-purple: #800080;
+  --string: #ff0000;
+  --string-hi: #ff4444;
+  --ui-bg: #080808;
+  --ui-text: #d4d0c8;
+  --ui-accent: #ff2a2a;
+  --ui-panel: #121212;
+}
+* { box-sizing: border-box; touch-action: manipulation; }
+html, body { margin: 0; padding: 0; height: 100%; overflow: hidden;
+  font-family: "Lora", Georgia, serif; background: #0f0a06; color: var(--ui-text); }
+.noselect {
+  -webkit-touch-callout: none; -webkit-user-select: none;
+  -khtml-user-select: none; -moz-user-select: none;
+  -ms-user-select: none; user-select: none;
+}
+#stage {
+  position: fixed; inset: 0;
+  background:
+    repeating-linear-gradient(45deg, transparent, transparent 100px, rgba(128,0,128,0.03) 100px, rgba(128,0,128,0.03) 102px),
+    repeating-linear-gradient(-45deg, transparent, transparent 150px, rgba(255,0,0,0.02) 150px, rgba(255,0,0,0.02) 152px),
+    radial-gradient(ellipse at 30% 20%, rgba(139,69,19,0.15), transparent 50%),
+    radial-gradient(ellipse at 70% 60%, rgba(0,0,0,0.4), transparent 40%),
+    radial-gradient(ellipse at 50% 80%, rgba(40,30,20,0.6), transparent 60%),
+    linear-gradient(180deg, #1a1510 0%, #0f0a06 30%, #0a0805 70%, #12100a 100%);
+  overflow: hidden; cursor: grab; z-index: 1;
+}
+#stage:active { cursor: grabbing; }
+#world { position: absolute; transform-origin: 0 0; will-change: transform; }
+#edges { position: absolute; inset: 0; pointer-events: none; z-index: 2; }
+#cards { position: absolute; z-index: 10; }
+.card {
+  position: absolute; width: 280px;
+  background: var(--paper-basement);
+  color: var(--ink-black);
+  font-family: "Lora", Georgia, serif;
+  padding: 0; border-radius: 2px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,0.15),
+    0 3px 8px rgba(0,0,0,0.12),
+    0 8px 24px rgba(0,0,0,0.08);
+  transition: transform 0.15s, box-shadow 0.15s;
+  cursor: pointer; z-index: 10;
+}
+.card:hover { transform: translateY(-4px) rotate(0.5deg);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 12px 32px rgba(0,0,0,0.15); z-index: 20; }
+.card.polaroid { width: 260px; background: var(--polaroid); padding: 12px 12px 48px; }
+.card.doc-card { width: 300px; background: var(--doc-card); padding: 0; }
+.card.cdcr-id { width: 260px; background: linear-gradient(135deg, #f5f0e8 0%, #e8e0d0 100%); padding: 0; border: 2px solid #333; }
+.card-header { padding: 16px 16px 8px; border-bottom: 1px solid rgba(0,0,0,0.08); }
+.card-title { font-family: "Oswald", sans-serif; font-weight: 700; font-size: 16px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-black); margin: 0 0 4px; line-height: 1.2; }
+.card-subtitle { font-family: "Courier Prime", monospace; font-size: 10px; color: var(--ink-muted); margin: 0; letter-spacing: 0.05em; }
+.card-body { padding: 12px 16px 16px; font-size: 12px; line-height: 1.6; color: var(--ink-black); }
+.card-footer { padding: 8px 16px 12px; border-top: 1px solid rgba(0,0,0,0.06); font-family: "Courier Prime", monospace; font-size: 9px; color: var(--ink-muted); letter-spacing: 0.03em; }
+.doc-number { font-family: "Courier Prime", monospace; font-size: 11px; font-weight: 700; color: var(--ink-blood); background: rgba(139,0,0,0.08); padding: 2px 8px; border-radius: 2px; display: inline-block; margin-bottom: 8px; }
+.cdcr-header { background: #1a1a1a; color: #fff; padding: 8px 12px; font-family: "Oswald", sans-serif; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; }
+.cdcr-photo { width: 100%; height: 180px; background: linear-gradient(135deg, #d4c4a0 0%, #c4b8a8 100%); display: flex; align-items: center; justify-content: center; font-family: "Special Elite", cursive; font-size: 48px; color: #888; }
+.cdcr-info { padding: 12px; }
+.cdcr-name { font-family: "Oswald", sans-serif; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-black); margin: 0 0 4px; }
+.cdcr-details { font-family: "Courier Prime", monospace; font-size: 10px; color: var(--ink-muted); line-height: 1.5; }
+.cdcr-stamp { position: absolute; bottom: 8px; right: 8px; font-family: "Special Elite", cursive; font-size: 10px; color: var(--ink-blood); transform: rotate(-12deg); opacity: 0.7; }
+.polaroid-img { width: 100%; height: 200px; background: linear-gradient(135deg, #8b7355 0%, #6b5a45 50%, #4a3f35 100%); display: flex; align-items: center; justify-content: center; font-family: "Special Elite", cursive; font-size: 36px; color: #a09080; margin-bottom: 12px; }
+.polaroid-caption { font-family: "Kalam", cursive; font-size: 14px; color: var(--ink-black); line-height: 1.4; text-align: center; }
+.pin { position: absolute; width: 8px; height: 8px; border-radius: 50%; z-index: 15; pointer-events: none; }
+.pin.red { background: radial-gradient(circle at 30% 30%, #ff4444, #aa0000); box-shadow: 0 0 4px rgba(255,0,0,0.4); }
+.pin.yellow { background: radial-gradient(circle at 30% 30%, #ffaa00, #cc5500); box-shadow: 0 0 4px rgba(255,170,0,0.4); }
+.pin.white { background: radial-gradient(circle at 30% 30%, #fff, #ccc); box-shadow: 0 0 4px rgba(255,255,255,0.3); }
+.string { stroke: var(--string); stroke-width: 1.5; fill: none; opacity: 0.6; pointer-events: none; }
+.string.hi { stroke: var(--string-hi); stroke-width: 2; opacity: 0.9; }
+.string.doc { stroke: var(--ink-blood); stroke-width: 1; stroke-dasharray: 4 3; opacity: 0.5; }
+#topbar {
+  position: fixed; top: 0; left: 0; right: 0;
+  padding: 12px 20px;
+  display: flex; gap: 16px; align-items: center;
+  z-index: 500;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0) 100%);
+}
+#topbar > * { pointer-events: auto; }
+#bottombar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  padding: 10px 20px;
+  display: flex; gap: 20px; justify-content: center; align-items: center;
+  z-index: 500;
+  background: linear-gradient(0deg, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0) 100%);
+  font-family: "Oswald", sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+#bottombar a { color: #d4cfc4; text-decoration: none; transition: color 0.2s; pointer-events: auto; }
+#bottombar a:hover { color: var(--spray-red); }
+#bottombar .sep { color: #555; pointer-events: none; }
+#title {
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #d4cfc4;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+}
+#title::before { content: "⚠ "; color: var(--spray-red); }
+.btn {
+  font-family: "Oswald", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: rgba(20,20,20,0.85);
+  border: 1px solid #333;
+  color: #d4cfc4;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn:hover { background: rgba(40,30,20,0.9); border-color: var(--spray-red); color: var(--spray-red); }
+.btn.active { background: rgba(139,0,0,0.2); border-color: var(--spray-red); color: var(--spray-red); }
+#zoom-indicator { font-family: "Courier Prime", monospace; font-size: 11px; color: #888; min-width: 40px; text-align: center; }
+#info-panel {
+  position: fixed; top: 80px; right: 20px; width: 340px;
+  background: rgba(15,15,15,0.95);
+  border: 1px solid #333;
+  padding: 20px;
+  z-index: 600;
+  display: none;
+  max-height: 70vh; overflow-y: auto;
+}
+#info-panel h3 { font-family: "Oswald", sans-serif; font-size: 16px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--spray-red); margin: 0 0 12px; }
+#info-panel p { font-family: "Lora", serif; font-size: 12px; line-height: 1.7; color: #d4cfc4; margin: 0 0 12px; }
+#info-panel .citation { font-family: "Courier Prime", monospace; font-size: 9px; color: #888; border-left: 2px solid var(--spray-red); padding-left: 8px; margin-top: 12px; }
+#tour-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 800; display: none; align-items: center; justify-content: center; flex-direction: column; }
+#tour-overlay.active { display: flex; }
+#tour-content { max-width: 600px; text-align: center; padding: 40px; }
+#tour-content h2 { font-family: "Playfair Display", serif; font-size: 28px; font-style: italic; color: #d4cfc4; margin: 0 0 16px; }
+#tour-content p { font-family: "Lora", serif; font-size: 14px; line-height: 1.8; color: #b8ac90; margin: 0 0 24px; }
+#tour-controls { position: fixed; bottom: 60px; left: 50%; transform: translateX(-50%); z-index: 900; display: none; gap: 12px; }
+#tour-controls.active { display: flex; }
+#intro { position: fixed; inset: 0; background: #0a0a0a; z-index: 1000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
+#intro-content { text-align: center; padding: 40px; }
+#intro-title { font-family: "Playfair Display", serif; font-size: 32px; font-style: italic; color: #d4cfc4; margin: 0 0 16px; min-height: 48px; }
+#intro-subtitle { font-family: "Oswald", sans-serif; font-size: 12px; letter-spacing: 3px; color: var(--spray-red); text-transform: uppercase; opacity: 0; transition: opacity 1s; }
+#intro-subtitle.visible { opacity: 1; }
+#intro-author { font-family: "Lora", serif; font-size: 14px; color: #888; margin-top: 8px; opacity: 0; transition: opacity 1s; }
+#intro-author.visible { opacity: 1; }
+.victim-highlight .card { box-shadow: 0 0 0 2px var(--spray-red), 0 4px 12px rgba(255,0,0,0.2); }
+@media (max-width: 768px) {
+  #info-panel { width: calc(100% - 40px); right: 20px; top: 60px; }
+  .card { width: 240px; }
+  .card.polaroid { width: 220px; }
+  #title { font-size: 14px; }
+  .btn { padding: 6px 10px; font-size: 9px; }
+}
+</style>
+</head>
+<body class="noselect">
+
+<div id="intro">
+  <div id="intro-content">
+    <p id="intro-title"></p>
+    <p id="intro-subtitle">THE COMPOUND &mdash; Zorro Ranch, Little Saint James, and the Architecture of Impunity</p>
+    <p id="intro-author">Kyle Jimenez</p>
+  </div>
+</div>
+
+<div id="stage">
+  <div id="world">
+    <svg id="edges" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div id="cards"></div>
+  </div>
+</div>
+
+<div id="topbar">
+  <div id="title">The Compound <small>Evidence Board</small></div>
+  <div style="flex:1"></div>
+  <button class="btn" id="toggle-library">Documents</button>
+  <button class="btn" id="victim-toggle">Victims</button>
+  <button class="btn zoom" id="zoom-out">-</button>
+  <div id="zoom-indicator">100%</div>
+  <button class="btn zoom" id="zoom-in">+</button>
+  <button class="btn" id="reset-view">Reset</button>
+  <button class="btn" id="tour-trigger">Tour</button>
+</div>
+
+<div id="info-panel">
+  <h3 id="info-title"></h3>
+  <div id="info-body" style="font-family:'Lora',serif;font-size:12px;line-height:1.7;color:#d4cfc4;margin:0 0 12px;"></div>
+  <div class="citation" id="info-citation"></div>
+</div>
+
+<div id="tour-overlay">
+  <div id="tour-content">
+    <h2 id="tour-title"></h2>
+    <p id="tour-desc"></p>
+    <button class="btn" id="tour-next">Continue &rarr;</button>
+  </div>
+</div>
+<div id="tour-controls">
+  <button class="btn" id="tour-prev">&larr; Prev</button>
+  <button class="btn" id="tour-close">Close</button>
+  <button class="btn" id="tour-next-btn">Next &rarr;</button>
+</div>
+
+<div id="doc-library" style="position:fixed;inset:0;background:linear-gradient(180deg,#2a2218 0%,#1e1812 100%);z-index:700;display:none;overflow:auto;">
+  <div style="max-width:1200px;margin:0 auto;padding:40px 20px 80px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:30px;">
+      <div>
+        <h1 style="font-family:'Playfair Display',serif;font-weight:900;font-size:32px;color:var(--ui-accent);margin:0 0 8px 0;">Document Library</h1>
+        <p style="font-family:'Lora',serif;font-size:14px;color:#b8ac90;margin:0;">Primary-source citations from THE COMPOUND, filterable by chapter and document type.</p>
+      </div>
+      <button class="btn" id="close-library" style="font-size:14px;padding:10px 16px;">&larr; Back to Board</button>
+    </div>
+    <div id="doc-list"></div>
+  </div>
+</div>
+
+<div id="bottombar">
+  <a href="https://gringo1904.substack.com" target="_blank" rel="noopener">Substack</a>
+  <span class="sep">|</span>
+  <a href="https://gringo1904.gumroad.com/l/eooea" target="_blank" rel="noopener">Gumroad</a>
+  <span class="sep">|</span>
+  <a href="https://github.com/Zombie760/unwarranted-influence" target="_blank" rel="noopener">GitHub</a>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  var PINS = [
+    { id:"p001", type:"person", name:"Jeffrey E. Epstein", years:"1953-2019", role:"Principal; money manager; trustee of Zorro Trust", chapters:["Ch1","Ch3","Ch5","Ch7","Ch8","Ch10","Ch12"], x:-400, y:100, multi:true },
+    { id:"p002", type:"person", name:"Bruce King", years:"1924-2009", role:"Governor of New Mexico (D), 1971-1979 & 1991-1995; grantor seller", chapters:["Ch1"], x:-600, y:50 },
+    { id:"p003", type:"person", name:"Leslie H. Wexner", years:"1937-", role:"Founder, L Brands (Victoria's Secret); Epstein's sole documented client", chapters:["Ch1","Ch10"], x:-500, y:200, multi:true },
+    { id:"p004", type:"institution", name:"Stanley Land Company", desc:"New Mexico entity owned by Bruce King family. Conveyed Zorro Ranch to Zorro Trust January 5, 1993.", related:["p002","p001"], chapters:["Ch1"], x:-650, y:150 },
+    { id:"p005", type:"institution", name:"Zorro Trust", desc:"Delaware grantor trust formed November 12, 1992. Settlor: Jeffrey Edward Epstein. Held title to 7,623.4 acres in Santa Fe County.", related:["p001","p004"], chapters:["Ch1","Ch2","Ch5"], x:-450, y:250 },
+    { id:"p006", type:"institution", name:"Santa Fe County", desc:"County clerk recorded deed January 5, 1993. Issued 63 building permits 1994-2019 with zero public opposition.", related:["p005"], chapters:["Ch1","Ch2","Ch4"], x:-300, y:350 },
+    { id:"e001", type:"event", name:"Deed Recorded", date:"January 5, 1993", desc:"Zorro Trust acquires 7,623.4 acres from Stanley Land Company for approximately $12 million. Wire traced to Wexner account.", source:"Santa Fe County Clerk, Book 2347, Page 118; Doe v. JPMorgan Chase discovery", x:-520, y:320 },
+    { id:"p007", type:"person", name:"RM", years:"", role:"Santa Fe County senior permit reviewer. Signed 14% of county permits in 1994. Signed all 63 Zorro permits.", chapters:["Ch2"], x:-200, y:450 },
+    { id:"p008", type:"institution", name:"Casa Verde", desc:"4,800 sq ft guest house. BP-97-0418. One of two compartmentalized guest structures.", related:["p005"], chapters:["Ch2"], x:-100, y:500 },
+    { id:"p009", type:"institution", name:"Casa Roja", desc:"3,200 sq ft guest house. BP-98-0712. Companion structure to Casa Verde.", related:["p005"], chapters:["Ch2"], x:0, y:480 },
+    { id:"e002", type:"event", name:"BP-94-0218 Issued", date:"January 28, 1994", desc:"Permit for 27,400 sq ft primary residence. Fee $11,840 paid by cashier's check from same bank that wired $12M.", source:"Santa Fe County Permit Office", x:-350, y:450 },
+    { id:"e003", type:"event", name:"Final CO", date:"September 14, 1996", desc:"Certificate of occupancy for 30,000 sq ft structure — 2,600 sq ft over permit. Approved retroactively by RM.", source:"Santa Fe County Form CO-96-0418", x:-250, y:550 },
+    { id:"p010", type:"person", name:"Ghislaine Maxwell", years:"1961-", role:"Socialite; household coordinator; convicted 2021. Daughter of Robert Maxwell.", chapters:["Ch3","Ch8","Ch12"], x:100, y:100, multi:true },
+    { id:"p011", type:"person", name:"Sarah Kellen", years:"", role:"Household-staff coordinator; federally immunized co-conspirator per 2008 NPA.", chapters:["Ch3","Ch12"], x:200, y:150 },
+    { id:"p012", type:"person", name:"David B. Rodgers", years:"", role:"Principal's longtime captain. FAA airman registry file 1923011. Piloted 1995-2019.", chapters:["Ch3","Ch8"], x:50, y:250 },
+    { id:"p013", type:"institution", name:"N908JE", desc:"Gulfstream II/III, 1971 airframe. In service 1995-2010. FAA registration public.", related:["p012"], chapters:["Ch3"], x:150, y:300 },
+    { id:"p014", type:"institution", name:"N474AW", desc:"Boeing 727-31, 1968 airframe. Retrofitted two staterooms 1995-96. 'Lolita Express'.", related:["p012"], chapters:["Ch3","Ch8"], x:250, y:280 },
+    { id:"e004", type:"event", name:"First Recorded Visit", date:"October 14, 1996", desc:"N908JE lands at Stanley Airstrip. 4 passengers: Epstein, Maxwell, Kellen, 'Jane' (age 16). Government Exhibit 52, US v. Maxwell.", source:"Doe v. Maxwell discovery; Maxwell trial transcript", x:180, y:200 },
+    { id:"e005", type:"event", name:"184 Flight Segments", date:"1995-2018", desc:"Stanley airstrip received ~184 segments. 72 full-name manifests. 112 redacted. 60% non-attribution rate = standing instruction.", source:"Doe v. Maxwell flight log production", x:300, y:350 },
+    { id:"p015", type:"person", name:"Senator Linda Lopez", years:"", role:"NM State Senator (D-District 11). Rose on floor March 14, 2024 to support SB 280 reopening investigation.", chapters:["Ch4"], x:450, y:100 },
+    { id:"p016", type:"person", name:"J. Madeleine Nash", years:"", role:"Co-author, Bombshell Report piece April 2, 2024. Named four professional sources on record.", chapters:["Ch4"], x:550, y:150 },
+    { id:"p017", type:"person", name:"Rachel Tobias", years:"", role:"Co-author, Bombshell Report piece April 2, 2024.", chapters:["Ch4"], x:600, y:100 },
+    { id:"e006", type:"event", name:"SB 280 Passes", date:"March 14, 2024", desc:"NM Senate passes bipartisan bill reopening criminal investigation. Senator Lopez names drugging, assault, pregnancy termination, child removal allegations on floor record.", source:"NM State Senate Journal, March 14, 2024; Bombshell Report, April 2, 2024", x:500, y:250 },
+    { id:"e007", type:"event", name:"Sheriff Case 18-12-0418", date:"2018", desc:"Two teenage trespassers breach perimeter, steal firearms from unsecured outbuilding. Neighbors knew property had operations worth breaching — yet filed zero permit objections.", source:"Santa Fe County Sheriff's Office", x:400, y:350 },
+    { id:"p018", type:"institution", name:"Little Saint James", desc:"~78-acre volcanic island, 2 miles SE of Saint Thomas. Purchased 1998 for $7.95M. 26,400 sq ft improved by 2019.", related:["p001"], chapters:["Ch5","Ch6","Ch8"], x:700, y:200 },
+    { id:"p019", type:"institution", name:"Cypress, Inc.", desc:"Delaware entity. Purchased Little Saint James 1998. Same shell renamed from Zorro Trust 2004.", related:["p005","p018"], chapters:["Ch5"], x:800, y:150 },
+    { id:"p020", type:"person", name:"Joseph Vaughan-King", years:"", role:"Caribbean architect of record for 'temple' structure. Acknowledged Byzantine chapel design reference in 2019 BBC interview.", chapters:["Ch5"], x:850, y:300 },
+    { id:"p021", type:"institution", name:"The Temple", desc:"Greek-revival pavilion, ~700 sq ft. Permitted 2000 as 'ornamental, no occupancy.' House Oversight Committee Aug 2024 photos prove occupiable interior use.", related:["p018","p020"], chapters:["Ch5"], x:750, y:350 },
+    { id:"p022", type:"institution", name:"Medical Facility", desc:"1,200 sq ft free-standing structure. 4 rooms: reception, dental, surgical, sterilization. BP-USVI-2007-1142. Subject of Chapter 6.", related:["p018"], chapters:["Ch5","Ch6"], x:900, y:400 },
+    { id:"e008", type:"event", name:"Island Purchase", date:"April 17, 1998", desc:"Greaves family conveys island to Cypress, Inc. for $7,950,000. Largest private-island sale in USVI history to that date.", source:"USVI Lieutenant Governor recording desk; USVI deed records", x:780, y:250 },
+    { id:"e009", type:"event", name:"Off-Permit Tunnel", date:"2007-2009", desc:"140-ft underground tunnel from main house basement to dock. Not on file with USVI DPNR. Shared contractor with Zorro Ranch off-permit basement.", source:"House Oversight Committee August 2024 photo release; Doe v. JPMorgan Chase discovery", x:920, y:500 },
+    { id:"p023", type:"person", name:"Karyna Shuliak DMD", years:"", role:"Named practitioner on USVI medical facility permit. Beneficiary of Epstein will (August 8, 2019).", chapters:["Ch5","Ch6","Ch7"], x:650, y:500 },
+    { id:"e010", type:"event", name:"House Oversight Release", date:"August 26, 2024", desc:"800 photographs + 48-page staff report released. 47 photos document medical facility interior. 28 masks on wall opposite dental chair.", source:"U.S. House Committee on Oversight and Accountability, August 26, 2024", x:800, y:550 },
+    { id:"p024", type:"person", name:"Darren K. Indyke", years:"", role:"Co-trustee, 1953 Trust. Longtime Epstein lawyer. Partner at Indyke & Blum.", chapters:["Ch7"], x:400, y:500 },
+    { id:"p025", type:"person", name:"Richard D. Kahn", years:"", role:"Co-trustee, 1953 Trust. Longtime Epstein lawyer.", chapters:["Ch7"], x:500, y:550 },
+    { id:"e011", type:"event", name:"Will Signed", date:"August 8, 2019", desc:"Epstein signs will at Indyke & Blum, 575 Lexington Ave. 48 hours later, dead at MCC Park Row. Estate valued $577M.", source:"USVI Probate Court; Indyke & Blum affidavit of due execution", x:450, y:450 },
+    { id:"p026", type:"institution", name:"1953 Trust", desc:"Trust established same day as will. Beneficiaries sealed under USVI probate. Co-trustees: Indyke and Kahn.", related:["p024","p025"], chapters:["Ch7"], x:350, y:550 },
+    { id:"p027", type:"person", name:"Bill Clinton", years:"1946-", role:"42nd U.S. President. Visited Little Saint James November 2002 per flight manifest.", chapters:["Ch8"], x:200, y:500 },
+    { id:"p028", type:"person", name:"Doug Band", years:"", role:"Counselor to President Clinton. On November 2002 manifest.", chapters:["Ch8"], x:250, y:450 },
+    { id:"p029", type:"person", name:"Chauntae Davies", years:"", role:"Named plaintiff in civil litigation vs. Maxwell. On November 2002 manifest as 'massage therapist.'", chapters:["Ch8"], x:300, y:550 },
+    { id:"p030", type:"person", name:"Larry M. Visoski", years:"", role:"Co-pilot, FAA No. 1247809. Filed 1997-2019.", chapters:["Ch8"], x:100, y:450 },
+    { id:"e012", type:"event", name:"Clinton Visit", date:"November 5, 2002", desc:"N909JE lands at Cyril E. King Airport. 6 passengers including Clinton, Band, Davies. Transferred by AW109 helicopter. 327 island segments documented 1998-2019.", source:"Doe v. Maxwell discovery; SDNY court file", x:200, y:600 },
+    { id:"p031", type:"person", name:"Lawrence M. Krauss", years:"", role:"Arizona State University. Named in Scientific American August 2019 email synthesis.", chapters:["Ch9"], x:-200, y:600 },
+    { id:"p032", type:"person", name:"Lawrence H. Summers", years:"", role:"Harvard; former U.S. Treasury Secretary. Named in email correspondence.", chapters:["Ch9"], x:-100, y:650 },
+    { id:"p033", type:"person", name:"Marvin Minsky", years:"1927-2016", role:"MIT. Named in email correspondence. Deceased 2016.", chapters:["Ch9"], x:0, y:600 },
+    { id:"p034", type:"person", name:"Murray Gell-Mann", years:"1929-2019", role:"Caltech / Santa Fe Institute. Named in email correspondence. Deceased 2019.", chapters:["Ch9"], x:100, y:650 },
+    { id:"p035", type:"person", name:"George Church", years:"", role:"Harvard Medical School. Named in email correspondence.", chapters:["Ch9"], x:-300, y:650 },
+    { id:"e013", type:"event", name:"'The Project'", date:"2001-2018", desc:"Epstein correspondence with 8+ named scientists on human genetic enhancement. Gamete selection, IVF screening, CRISPR-Cas9. 20 unnamed female participants referenced by initials.", source:"Scientific American, August 22, 2019; Adam Mann", x:-100, y:550 },
+    { id:"p036", type:"person", name:"Jes Staley", years:"", role:"Head of JPMorgan private banking 1998-2013. 14 visits to Little Saint James 2008-2013. Fined £1.8M by UK FCA, banned 7 years.", chapters:["Ch10"], x:-500, y:400 },
+    { id:"p037", type:"person", name:"Judge Jed S. Rakoff", years:"", role:"SDNY Judge. Approved $290M JPMorgan settlement June 12, 2023.", chapters:["Ch10"], x:-400, y:500 },
+    { id:"p038", type:"institution", name:"JPMorgan Chase", desc:"Held Epstein accounts 1998-2013. 47 AML flags 2002-2013. $1.1B total transaction volume. $290M settlement.", related:["p036"], chapters:["Ch10","Ch11"], x:-600, y:500 },
+    { id:"e014", type:"event", name:"JPMorgan Settlement", date:"June 12, 2023", desc:"Doe 1 v. JPMorgan Chase settled $290M. 1,400 internal documents released. No admission of liability.", source:"SDNY Case 1:22-cv-10018; Judge Rakoff approval", x:-550, y:600 },
+    { id:"p039", type:"person", name:"Robert Maxwell", years:"1923-1991", role:"British publishing magnate, Czech-Jewish origin. Drowned November 1991. Ghislaine's father. Epstein's mentor.", chapters:["Ch11"], x:-800, y:200 },
+    { id:"p040", type:"person", name:"Kamal Adham", years:"1929-2010", role:"Former director general, Saudi general intelligence. Named in BCCI network (Senate Print 102-140).", chapters:["Ch11"], x:-700, y:300 },
+    { id:"p041", type:"institution", name:"Deutsche Bank", desc:"Held Epstein accounts post-2013. DFS consent order. Settled Doe 1 v. Deutsche Bank May 17, 2023.", related:["p038"], chapters:["Ch10","Ch11"], x:-750, y:450 },
+    { id:"e015", type:"event", name:"Network Scale", date:"2019-2024", desc:"9 filed proceedings. 2 criminal convictions. 412 unique individuals named in dockets. Ratio: 2/412.", source:"SDNY / SDFL / USVI court dockets and exhibits", x:-650, y:350 },
+    { id:"p042", type:"person", name:"Alexander Acosta", years:"1969-", role:"U.S. Attorney, SDFL. Signed NPA September 24, 2007. Later Secretary of Labor.", chapters:["Ch12"], x:-900, y:500 },
+    { id:"p043", type:"person", name:"Joseph Recarey", years:"", role:"Palm Beach Police detective. Referred case to FBI 2005.", chapters:["Ch12"], x:-850, y:600 },
+    { id:"p044", type:"person", name:"Barry Krischer", years:"", role:"Palm Beach State Attorney. Declined to pursue state charges with urgency.", chapters:["Ch12"], x:-950, y:600 },
+    { id:"p045", type:"person", name:"Adriana Ross", years:"", role:"Named co-conspirator, 2008 NPA. Alleged recruitment/scheduling role.", chapters:["Ch12"], x:-800, y:700 },
+    { id:"p046", type:"person", name:"Lesley Groff", years:"", role:"Named co-conspirator, 2008 NPA. Alleged recruitment/scheduling role.", chapters:["Ch12"], x:-700, y:750 },
+    { id:"p047", type:"person", name:"Nadia Marcinkova", years:"", role:"Named co-conspirator, 2008 NPA. Alleged recruitment/scheduling role.", chapters:["Ch12"], x:-600, y:700 },
+    { id:"e016", type:"event", name:"NPA Signed", date:"September 24, 2007", desc:"53-count federal draft indictment shelved. Plea: 2 state counts, 18 months with 12hr/day work release. Immunity for 'any potential co-conspirators.'", source:"SDFL U.S. Attorney's Office; unsealed NPA text", x:-850, y:650 },
+    { id:"e017", type:"event", name:"The Seventeen-Month Gap", date:"July 6, 2019 - First Subpoena", desc:"Berman raid to first bipartisan truth-commission subpoena. US Attorney Geoffrey Berman fired June 19, 2020. The gap was the policy.", source:"SDNY court records; congressional oversight timelines", x:-400, y:700 }
+  ];
+
+  var EDGES = [
+    { source:"p001", target:"p005", kind:"trustee", document:"Deed, Jan 5 1993" },
+    { source:"p002", target:"p004", kind:"owns" },
+    { source:"p004", target:"p005", kind:"conveys", document:"Deed, $12M" },
+    { source:"p003", target:"p001", kind:"client", document:"L Brands proxy; JPMorgan discovery" },
+    { source:"p001", target:"p006", kind:"permits", document:"63 actions, 0 opposition" },
+    { source:"p007", target:"p005", kind:"reviews", document:"All 63 permits" },
+    { source:"p001", target:"p010", kind:"operates_with", document:"Flight logs; trial exhibits" },
+    { source:"p001", target:"p011", kind:"operates_with", document:"NPA co-conspirator list" },
+    { source:"p012", target:"p013", kind:"pilots" },
+    { source:"p012", target:"p014", kind:"pilots" },
+    { source:"p013", target:"e004", kind:"lands" },
+    { source:"p014", target:"e012", kind:"lands" },
+    { source:"p015", target:"e006", kind:"sponsors" },
+    { source:"p001", target:"p018", kind:"owns", document:"Cypress, Inc." },
+    { source:"p019", target:"p018", kind:"holds_title" },
+    { source:"p019", target:"p005", kind:"same_shell" },
+    { source:"p020", target:"p021", kind:"designed" },
+    { source:"p022", target:"p023", kind:"named_practitioner" },
+    { source:"p018", target:"e009", kind:"off_permit" },
+    { source:"p023", target:"e011", kind:"beneficiary" },
+    { source:"p024", target:"p026", kind:"co_trustee" },
+    { source:"p025", target:"p026", kind:"co_trustee" },
+    { source:"p001", target:"e011", kind:"signs" },
+    { source:"p027", target:"e012", kind:"visits" },
+    { source:"p028", target:"e012", kind:"visits" },
+    { source:"p029", target:"e012", kind:"visits" },
+    { source:"p001", target:"e013", kind:"corresponds", document:"Scientific American, Aug 2019" },
+    { source:"p031", target:"e013", kind:"corresponds" },
+    { source:"p032", target:"e013", kind:"corresponds" },
+    { source:"p033", target:"e013", kind:"corresponds" },
+    { source:"p034", target:"e013", kind:"corresponds" },
+    { source:"p035", target:"e013", kind:"corresponds" },
+    { source:"p036", target:"p038", kind:"managed_account" },
+    { source:"p038", target:"e014", kind:"settles" },
+    { source:"p037", target:"e014", kind:"approves" },
+    { source:"p039", target:"p010", kind:"father" },
+    { source:"p039", target:"p001", kind:"mentor" },
+    { source:"p040", target:"p041", kind:"BCCI_network" },
+    { source:"p042", target:"e016", kind:"signs" },
+    { source:"p043", target:"e016", kind:"builds_case" },
+    { source:"p044", target:"e016", kind:"declines" },
+    { source:"p011", target:"e016", kind:"immunity" },
+    { source:"p045", target:"e016", kind:"immunity" },
+    { source:"p046", target:"e016", kind:"immunity" },
+    { source:"p047", target:"e016", kind:"immunity" }
+  ];
+
+  var TOUR_BEATS = [
+    { id: 1, chapter: "Ch1", title: "Chapter 1 — The Deed", caption: "January 5, 1993. Santa Fe County Courthouse. A sitting governor's family sells 7,623 acres to a forty-year-old money manager from Manhattan. The wire that funded the $12 million originated at Leslie Wexner's bank.", camera: { x: -300, y: 200, k: 0.7 }, highlight: ["p001","p002","p004","p005","p003","e001"] },
+    { id: 2, chapter: "Ch2", title: "Chapter 2 — The Permits", caption: "Sixty-three administrative actions over twenty-five years. Zero public-opposition filings. Zero staff recommendations for denial. The property was never told no.", camera: { x: -150, y: 450, k: 0.75 }, highlight: ["p007","p008","p009","e002","e003"] },
+    { id: 3, chapter: "Ch3", title: "Chapter 3 — The Visitors on the Record", caption: "184 flight segments to Stanley Airstrip. 72 full-name manifests. 112 redacted. The 60% non-attribution rate across three aircraft and fourteen crew members is not accident — it is standing instruction.", camera: { x: 150, y: 250, k: 0.8 }, highlight: ["p010","p011","p012","p013","p014","e004","e005"] },
+    { id: 4, chapter: "Ch4", title: "Chapter 4 — The Male Victims and the Cadaver Dogs", caption: "March 14, 2024. Senator Linda Lopez rises on the NM Senate floor. Four named professional sources. Allegations of drugging, assault, pregnancy termination, and child removal. All on the public record.", camera: { x: 500, y: 200, k: 0.75 }, highlight: ["p015","p016","p017","e006","e007"] },
+    { id: 5, chapter: "Ch5", title: "Chapter 5 — Little Saint James", caption: "April 17, 1998. Greaves family conveys 78 acres to Cypress, Inc. for $7.95M. By 2019: 26,400 sq ft improved, underground tunnel, temple, medical facility. Total off-permit constructions: two.", camera: { x: 800, y: 350, k: 0.7 }, highlight: ["p018","p019","p020","p021","p022","e008","e009"] },
+    { id: 6, chapter: "Ch6", title: "Chapter 6 — The Dental Suite", caption: "August 26, 2024. House Oversight releases 800 photographs. 28 masks mounted at eye level opposite a dental chair. A room designed for the act in the chair to occur under the gaze of twenty-eight surrogate faces.", camera: { x: 800, y: 500, k: 0.85 }, highlight: ["p023","p022","e010"] },
+    { id: 7, chapter: "Ch7", title: "Chapter 7 — Karyna Shuliak and the Will", caption: "August 8, 2019. Epstein signs a will at Indyke & Blum. 48 hours later, dead at MCC Park Row. Estate: $577 million. One named beneficiary outside the sealed trust: Karyna Shuliak.", camera: { x: 450, y: 500, k: 0.8 }, highlight: ["p023","p024","p025","p026","e011"] },
+    { id: 8, chapter: "Ch8", title: "Chapter 8 — The Visitors on the Island", caption: "November 5, 2002. N909JE lands at Cyril E. King Airport. Bill Clinton, Doug Band, Chauntae Davies on manifest. 327 island flight segments 1998-2019. The same standing instruction.", camera: { x: 250, y: 500, k: 0.8 }, highlight: ["p027","p028","p029","p030","e012"] },
+    { id: 9, chapter: "Ch9", title: "Chapter 9 — The Eugenics Correspondence", caption: "Scientific American, August 22, 2019. Epstein emails with Krauss, Summers, Minsky, Gell-Mann, Church, and others. The subject: 'the project.' Gamete selection. CRISPR. Twenty named female participants.", camera: { x: -50, y: 600, k: 0.75 }, highlight: ["p031","p032","p033","p034","p035","e013"] },
+    { id: 10, chapter: "Ch10", title: "Chapter 10 — The Money", caption: "June 12, 2023. Judge Rakoff approves $290 million JPMorgan settlement. 1,400 internal documents released. 47 AML flags. $1.1 billion total volume. The signatures are filed.", camera: { x: -500, y: 500, k: 0.75 }, highlight: ["p036","p037","p038","e014"] },
+    { id: 11, chapter: "Ch11", title: "Chapter 11 — The Network", caption: "Nine filed proceedings. Two criminal convictions. Four hundred twelve unique individuals. The ratio is the chapter.", camera: { x: -700, y: 400, k: 0.7 }, highlight: ["p039","p040","p041","e015"] },
+    { id: 12, chapter: "Ch12", title: "Chapter 12 — The Acosta Agreement", caption: "September 24, 2007. 53-count federal draft indictment shelved. Eighteen months with twelve-hour work release. Immunity for 'any potential co-conspirators.' The named four: Kellen, Ross, Groff, Marcinkova.", camera: { x: -800, y: 600, k: 0.75 }, highlight: ["p042","p043","p044","p011","p045","p046","p047","e016"] },
+    { id: 13, chapter: "Ch13", title: "Chapter 13 — The Seventeen-Month Gap", caption: "July 6, 2019 to the first subpoena. The Berman raid. The firing. The gap was the policy. The policy was the cover-up.", camera: { x: -400, y: 650, k: 0.8 }, highlight: ["e017"] }
+  ];
+
+  var stage = document.getElementById("stage");
+  var world = document.getElementById("world");
+  var edgesSvg = document.getElementById("edges");
+  var cardsDiv = document.getElementById("cards");
+  var state = { x:0, y:0, k:1, dragging:false, lastX:0, lastY:0 };
+
+  function makeEl(tag, cls, txt) {
+    var el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (txt) el.textContent = txt;
+    return el;
+  }
+
+  function renderCard(pin) {
+    var el = document.createElement("div");
+    el.className = "card";
+    el.id = "card-" + pin.id;
+    el.style.left = pin.x + "px";
+    el.style.top = pin.y + "px";
+    el.dataset.id = pin.id;
+
+    if (pin.type === "person") {
+      el.classList.add("cdcr-id");
+      el.appendChild(makeEl("div", "cdcr-header", "PERSON OF RECORD"));
+      var photo = makeEl("div", "cdcr-photo", "?");
+      el.appendChild(photo);
+      var info = makeEl("div", "cdcr-info");
+      info.appendChild(makeEl("div", "cdcr-name", pin.name));
+      var det = makeEl("div", "cdcr-details");
+      det.appendChild(document.createTextNode((pin.years || "") + "\n"));
+      det.appendChild(document.createElement("br"));
+      det.appendChild(document.createTextNode(pin.role));
+      info.appendChild(det);
+      el.appendChild(info);
+      el.appendChild(makeEl("div", "cdcr-stamp", "CITATION FILED"));
+    } else if (pin.type === "institution") {
+      var hdr = makeEl("div", "card-header");
+      hdr.appendChild(makeEl("div", "card-title", pin.name));
+      el.appendChild(hdr);
+      el.appendChild(makeEl("div", "card-body", pin.desc));
+      var foot = makeEl("div", "card-footer");
+      foot.textContent = "Chapters: " + (pin.chapters || []).join(", ");
+      el.appendChild(foot);
+    } else if (pin.type === "event") {
+      var hdr2 = makeEl("div", "card-header");
+      hdr2.appendChild(makeEl("div", "card-title", pin.name));
+      hdr2.appendChild(makeEl("div", "card-subtitle", pin.date));
+      el.appendChild(hdr2);
+      el.appendChild(makeEl("div", "card-body", pin.desc));
+      var foot2 = makeEl("div", "card-footer");
+      foot2.textContent = "Source: " + pin.source;
+      el.appendChild(foot2);
+    }
+
+    el.addEventListener("click", function() { showInfo(pin); });
+    return el;
+  }
+
+  function renderPin(pin) {
+    var p = document.createElement("div");
+    p.className = "pin " + (pin.type === "event" ? "yellow" : pin.type === "document" ? "white" : "red");
+    p.style.left = (pin.x + 140) + "px";
+    p.style.top = (pin.y - 6) + "px";
+    return p;
+  }
+
+  PINS.forEach(function(pin) {
+    cardsDiv.appendChild(renderCard(pin));
+    cardsDiv.appendChild(renderPin(pin));
+  });
+
+  function renderEdges() {
+    edgesSvg.innerHTML = "";
+    EDGES.forEach(function(edge) {
+      var s = PINS.find(function(p){ return p.id === edge.source; });
+      var t = PINS.find(function(p){ return p.id === edge.target; });
+      if (!s || !t) return;
+      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", s.x + 140);
+      line.setAttribute("y1", s.y + 80);
+      line.setAttribute("x2", t.x + 140);
+      line.setAttribute("y2", t.y + 80);
+      line.setAttribute("class", "string " + (edge.document ? "doc" : ""));
+      edgesSvg.appendChild(line);
+    });
+  }
+  renderEdges();
+
+  function updateTransform() {
+    world.style.transform = "translate(" + state.x + "px," + state.y + "px) scale(" + state.k + ")";
+    document.getElementById("zoom-indicator").textContent = Math.round(state.k * 100) + "%";
+  }
+  updateTransform();
+
+  stage.addEventListener("mousedown", function(e) {
+    if (e.target.closest(".card") || e.target.closest(".btn")) return;
+    state.dragging = true; state.lastX = e.clientX; state.lastY = e.clientY;
+  });
+  window.addEventListener("mousemove", function(e) {
+    if (!state.dragging) return;
+    state.x += e.clientX - state.lastX;
+    state.y += e.clientY - state.lastY;
+    state.lastX = e.clientX; state.lastY = e.clientY;
+    updateTransform();
+  });
+  window.addEventListener("mouseup", function() { state.dragging = false; });
+
+  stage.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    var zoomSpeed = 0.001;
+    var newK = state.k * (1 - e.deltaY * zoomSpeed);
+    newK = Math.max(0.3, Math.min(3, newK));
+    var rect = stage.getBoundingClientRect();
+    var mx = e.clientX - rect.left, my = e.clientY - rect.top;
+    state.x = mx - (mx - state.x) * (newK / state.k);
+    state.y = my - (my - state.y) * (newK / state.k);
+    state.k = newK;
+    updateTransform();
+  }, { passive: false });
+
+  document.getElementById("zoom-in").addEventListener("click", function() {
+    state.k = Math.min(3, state.k * 1.2); updateTransform();
+  });
+  document.getElementById("zoom-out").addEventListener("click", function() {
+    state.k = Math.max(0.3, state.k / 1.2); updateTransform();
+  });
+  document.getElementById("reset-view").addEventListener("click", function() {
+    state.x = 0; state.y = 0; state.k = 1; updateTransform();
+  });
+
+  var infoPanel = document.getElementById("info-panel");
+  function showInfo(pin) {
+    document.getElementById("info-title").textContent = pin.name;
+    var body = document.getElementById("info-body");
+    body.innerHTML = "";
+    if (pin.type === "person") {
+      if (pin.years) body.appendChild(document.createTextNode("Years: " + pin.years + "\n\n"));
+      body.appendChild(document.createTextNode("Role: " + pin.role));
+    } else if (pin.type === "institution") {
+      body.appendChild(document.createTextNode(pin.desc));
+    } else if (pin.type === "event") {
+      body.appendChild(document.createTextNode("Date: " + pin.date + "\n\n" + pin.desc));
+    }
+    document.getElementById("info-citation").textContent = (pin.source || (pin.chapters ? "Chapters: " + pin.chapters.join(", ") : ""));
+    infoPanel.style.display = "block";
+  }
+
+  stage.addEventListener("click", function(e) {
+    if (!e.target.closest(".card")) infoPanel.style.display = "none";
+  });
+
+  var tourState = { active:false, currentBeat:0 };
+  var tourOverlay = document.getElementById("tour-overlay");
+  var tourControls = document.getElementById("tour-controls");
+
+  function showBeat(idx) {
+    var beat = TOUR_BEATS[idx];
+    if (!beat) return;
+    document.getElementById("tour-title").textContent = beat.title;
+    document.getElementById("tour-desc").textContent = beat.caption;
+    var start = { x: state.x, y: state.y, k: state.k };
+    var end = { x: -beat.camera.x * beat.camera.k + stage.clientWidth/2 - 140*beat.camera.k,
+                y: -beat.camera.y * beat.camera.k + stage.clientHeight/2 - 80*beat.camera.k,
+                k: beat.camera.k };
+    var startTime = performance.now();
+    function step(now) {
+      var t = Math.min(1, (now - startTime) / 800);
+      var ease = t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2;
+      state.x = start.x + (end.x - start.x) * ease;
+      state.y = start.y + (end.y - start.y) * ease;
+      state.k = start.k + (end.k - start.k) * ease;
+      updateTransform();
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    document.querySelectorAll(".card").forEach(function(c) { c.style.boxShadow = ""; });
+    (beat.highlight || []).forEach(function(id) {
+      var c = document.getElementById("card-" + id);
+      if (c) c.style.boxShadow = "0 0 0 3px var(--spray-red), 0 4px 16px rgba(255,0,0,0.3)";
+    });
+  }
+
+  function startTour() {
+    tourState.active = true; tourState.currentBeat = 0;
+    tourOverlay.classList.add("active");
+    tourControls.classList.add("active");
+    showBeat(0);
+  }
+  function nextBeat() {
+    if (tourState.currentBeat < TOUR_BEATS.length - 1) {
+      tourState.currentBeat++; showBeat(tourState.currentBeat);
+    } else { endTour(); }
+  }
+  function prevBeat() {
+    if (tourState.currentBeat > 0) { tourState.currentBeat--; showBeat(tourState.currentBeat); }
+  }
+  function endTour() {
+    tourState.active = false;
+    tourOverlay.classList.remove("active");
+    tourControls.classList.remove("active");
+    document.querySelectorAll(".card").forEach(function(c) { c.style.boxShadow = ""; });
+  }
+
+  document.getElementById("tour-trigger").addEventListener("click", startTour);
+  document.getElementById("tour-next").addEventListener("click", nextBeat);
+  document.getElementById("tour-next-btn").addEventListener("click", nextBeat);
+  document.getElementById("tour-prev").addEventListener("click", prevBeat);
+  document.getElementById("tour-close").addEventListener("click", endTour);
+
+  var titleEl = document.getElementById("intro-title");
+  var subtitleEl = document.getElementById("intro-subtitle");
+  var authorEl = document.getElementById("intro-author");
+  var intro = document.getElementById("intro");
+  var TITLE_TEXT = "THE COMPOUND";
+
+  function typewriter(el, text, speed, cb) {
+    var i = 0;
+    function tick() {
+      if (i < text.length) { el.textContent += text.charAt(i); i++; setTimeout(tick, speed); }
+      else if (cb) cb();
+    }
+    tick();
+  }
+
+  setTimeout(function() { typewriter(titleEl, TITLE_TEXT, 60, function() {
+    setTimeout(function() { subtitleEl.classList.add("visible"); }, 400);
+    setTimeout(function() { authorEl.classList.add("visible"); }, 800);
+    setTimeout(function() { intro.style.opacity = "0"; intro.style.transition = "opacity 1s"; }, 3000);
+    setTimeout(function() { intro.style.display = "none"; }, 4000);
+  });}, 600);
+
+  var docLibrary = document.getElementById("doc-library");
+  var docList = document.getElementById("doc-list");
+  document.getElementById("toggle-library").addEventListener("click", function() {
+    docLibrary.style.display = "block";
+    if (!docList.innerHTML) {
+      var docs = PINS.filter(function(p){ return p.type === "event" || p.type === "document"; });
+      docs.forEach(function(d) {
+        var row = document.createElement("div");
+        row.style.cssText = "background:rgba(20,16,12,0.9);border:1px solid #333;padding:16px;margin-bottom:12px;";
+        var t = makeEl("div", "", d.name || d.id);
+        t.style.cssText = "font-family:'Oswald',sans-serif;font-size:14px;color:var(--spray-red);margin-bottom:4px;";
+        row.appendChild(t);
+        var desc = makeEl("div", "", d.desc || "");
+        desc.style.cssText = "font-family:'Lora',serif;font-size:12px;color:#b8ac90;";
+        row.appendChild(desc);
+        var src = makeEl("div", "", d.source || d.chapter || "");
+        src.style.cssText = "font-family:'Courier Prime',monospace;font-size:9px;color:#666;margin-top:8px;";
+        row.appendChild(src);
+        docList.appendChild(row);
+      });
+    }
+  });
+  document.getElementById("close-library").addEventListener("click", function() { docLibrary.style.display = "none"; });
+
+  var victimMode = false;
+  document.getElementById("victim-toggle").addEventListener("click", function() {
+    victimMode = !victimMode;
+    this.classList.toggle("active", victimMode);
+    var victimIds = ["e004","e006","e012"];
+    victimIds.forEach(function(id) {
+      var c = document.getElementById("card-" + id);
+      if (c) c.classList.toggle("victim-highlight", victimMode);
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
