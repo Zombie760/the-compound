@@ -10,7 +10,7 @@
 
 ## Enter the Evidence Board
 
-**[Click here to open the interactive Corkboard →](https://zombie760.github.io/the-compound/corkboard/)**
+**[Click here to open the interactive Corkboard →](https://zombie760.github.io/the-compound)**
 
 40+ named persons. 20+ institutions. 50+ filed documents. Drag the board. Pull a thread. Click any pin to see the primary-source citation, archive location, and manuscript chapter cross-reference. Every pin is a filed document.
 
@@ -46,7 +46,7 @@ This book operates on a **prove-it-first** model. The full text and every citati
 
 ## Companion Materials
 
-- **Interactive Evidence Board:** [zombie760.github.io/the-compound/corkboard/](https://zombie760.github.io/the-compound/corkboard/)
+- **Interactive Evidence Board:** [zombie760.github.io/the-compound](https://zombie760.github.io/the-compound)
 - **News Aggregator:** [BOTWAVEBOMBA](https://botwave.app/botwavebomba/)
 - **Corruption Tracker:** [botwave.app/corruption.html](https://botwave.app/corruption.html)
 
