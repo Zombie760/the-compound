@@ -50,10 +50,6 @@ This book operates on a **prove-it-first** model. The full text and every citati
 - **News Aggregator:** [BOTWAVEBOMBA](https://botwave.app/botwavebomba/)
 - **Corruption Tracker:** [botwave.app/corruption.html](https://botwave.app/corruption.html)
 
-## Method
-
-Built on the TELOS+PAI substrate. Every chapter passes the Prime Directive gate: a named, filed, publicly-verifiable primary source for every factual claim.
-
 ---
 
 *Every claim filed. Every source named.*
